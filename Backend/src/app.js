@@ -1,16 +1,28 @@
 const express = require('express')
-const  dbConnection = require("../config/database")
+const  dbConnection  = require("../db/db")
 const User = require('../models/users')
+const { validateSignUpData } = require('../utils/validateData')
+const bcrypt = require('bcrypt') 
+
 const app = express() 
 
 app.use(express.json())
 
-app.post("/newUSer",async(req,res)=>{
+app.post("/signup",async(req,res)=>{
     try {
         
-        const data = req.body
+        const {firstName,lastName,email,password} = req.body 
 
-        const user = new User(data)
+        validateSignUpData(req)
+
+        const hashPassword = await bcrypt.hash(password,10)
+
+        const user = new User({
+            firstName,
+            lastName,
+            email,
+            password:hashPassword
+        })
 
         await user.save() 
 
@@ -23,7 +35,40 @@ app.post("/newUSer",async(req,res)=>{
     } catch (error) {
         return res.status(500).json({
             success:false,
-            message:error
+            message:error.message
+        
+        })
+    }
+}) 
+
+app.post("/login",async(req,res)=>{
+    try {
+        
+        const {email,password} = req.body 
+
+        const user = await User.findOne({email:email})
+
+        if(!user){
+            throw new Error("User Not Found")
+        } 
+
+        const comparePassword = await bcrypt.compare(password,user.password) 
+
+        if(!comparePassword){
+            throw new Error("invalid credentilas")
+        }
+
+        return res.status(200).json({
+            success:true,
+            message:`${user.firstName} Login Successfully`
+        })
+
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:error.message
         
         })
     }
@@ -51,7 +96,7 @@ app.get("/user",async(req,res)=>{
     } catch (error) {
         return res.status(500).json({
             success:false,
-            message:error
+            message:error.message
         
         })
     }
@@ -85,7 +130,7 @@ app.patch("/userUpdate",async (req,res)=>{
     } catch (error) {
         return res.status(500).json({
             success:false,
-            message:error
+            message:error.message
         
         })
     }
