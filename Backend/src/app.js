@@ -3,10 +3,14 @@ const  dbConnection  = require("../db/db")
 const User = require('../models/users')
 const { validateSignUpData } = require('../utils/validateData')
 const bcrypt = require('bcrypt') 
+const jwt = require('jsonwebtoken')
+const { userAuth } = require('../Middleware/Auth') 
+const cookieParser = require('cookie-parser')
 
 const app = express() 
 
-app.use(express.json())
+app.use(express.json()) 
+app.use(cookieParser())
 
 app.post("/signup",async(req,res)=>{
     try {
@@ -56,9 +60,13 @@ app.post("/login",async(req,res)=>{
 
         if(!comparePassword){
             throw new Error("invalid credentilas")
-        }
+        } 
 
-        return res.status(200).json({
+        const token = jwt.sign({id:user._id},"ThisisPrivateKey",{expiresIn:"1d"}) 
+
+
+
+        return res.cookie("token",token,{expires:new Date(Date.now() + 1*24*60*60*1000),httpOnly:true}).status(200).json({
             success:true,
             message:`${user.firstName} Login Successfully`
         })
@@ -74,10 +82,10 @@ app.post("/login",async(req,res)=>{
     }
 })
 
-app.get("/user",async(req,res)=>{
+app.get("/user",userAuth, async(req,res)=>{
     try {
         
-        const users = await User.find({})
+        const users = await User.find()
 
         if(users.length == 0){
             return res.status(200).json({
