@@ -56,20 +56,26 @@ app.post("/login",async(req,res)=>{
             throw new Error("User Not Found")
         } 
 
-        const comparePassword = await bcrypt.compare(password,user.password) 
+        const comparePassword = await user.validatePassword(password)
 
-        if(!comparePassword){
+        if(comparePassword){
+            const token = await user.getJWT() 
+
+            return res.cookie("token",token,{expires:new Date(Date.now() + 1*24*60*60*1000),httpOnly:true}).status(200).json({
+                success:true,
+                message:`${user.firstName} Login Successfully`
+            })
+
+
+        } else{
             throw new Error("invalid credentilas")
-        } 
+        }
 
-        const token = jwt.sign({id:user._id},"ThisisPrivateKey",{expiresIn:"1d"}) 
+        
 
 
 
-        return res.cookie("token",token,{expires:new Date(Date.now() + 1*24*60*60*1000),httpOnly:true}).status(200).json({
-            success:true,
-            message:`${user.firstName} Login Successfully`
-        })
+     
 
 
 
