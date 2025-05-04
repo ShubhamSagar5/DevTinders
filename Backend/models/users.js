@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema({
             if(value.length > 10 ){
                 throw new Error("Skiils is not allowed more than 10")
             }
-        }
+        } 
     }
 
 },{

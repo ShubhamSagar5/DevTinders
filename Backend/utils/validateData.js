@@ -1,4 +1,5 @@
-const validator = require('validator')
+const validator = require('validator') 
+const bcrypt = require("bcrypt") 
 
 
 const validateSignUpData = (req) => {
@@ -17,8 +18,32 @@ const validateSignUpData = (req) => {
 
 } 
 
+const validateUpdateProfile = (req) => {
 
+    const allowedData  = ["firstName","lastName","email","gender","photoUrl","about","skills"]  
+
+    const data = req.body 
+
+    const isAllowed = Object.keys(data).every((keys)=> allowedData.includes(keys)) 
+     
+    return isAllowed
+
+
+} 
+
+const validatePassword = (newPassword) => {
+console.log(newPassword)
+
+
+    const isThisStrongPassword = validator.isStrongPassword(newPassword) 
+
+   return isThisStrongPassword
+
+
+}
 
 module.exports = {
-    validateSignUpData
+    validateSignUpData,
+    validateUpdateProfile,
+    validatePassword
 }

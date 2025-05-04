@@ -20,7 +20,7 @@ const userAuth = async(req,res,next) => {
         throw new Error("User Not Found Invalid Token Please Login again")
     }
  
-    req.user = user._id
+    req.user = user
 
     next() 
 
