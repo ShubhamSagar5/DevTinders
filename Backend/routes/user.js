@@ -1,6 +1,7 @@
 const express = require('express') 
 const { userAuth } = require('../Middleware/Auth')
 const ConnectionModel = require('../models/connectionRequest')
+const User = require('../models/users')
 
 const userRouter = express.Router() 
 
@@ -75,6 +76,70 @@ userRouter.get("/connection",userAuth,async(req,res)=>{
 
     } catch (error) {
         
+    }
+})
+
+
+userRouter.get("/feed",userAuth,async(req,res)=>{
+    try {
+        
+        const loggedInUser = req.user._id 
+        const page = parseInt(req.query.page) || 1 
+        let limit = parseInt(req.query.limit) || 10 
+        limit = limit > 50 ? 50 : limit 
+        
+        let skip = (page - 1) * limit
+
+       
+
+        const allConnection = await ConnectionModel.find({$or:[
+            {
+                fromUserId:loggedInUser
+            },
+            {
+                toUserId:loggedInUser
+            }
+        ]
+            
+        }).select("fromUserId toUserId")
+
+        const hiddenFromFeed = new Set() 
+
+        allConnection.forEach((val)=>{
+            hiddenFromFeed.add(val.fromUserId.toString())
+            hiddenFromFeed.add(val.toUserId.toString())
+        })
+
+    const finalFeed = await User.find({$and:[
+        {
+            _id:{$nin:Array.from(hiddenFromFeed)}
+
+        },
+        {
+            _id:{$ne:loggedInUser}
+        }
+    ]
+    
+    }).select("firstName lastName gender photoUrl about skills").skip(skip).limit(limit) 
+
+    if(!finalFeed.length){
+        return res.status(200).json({
+            success:true,
+            message:"Data not Available"
+        })
+    }
+
+        return res.status(200).json({
+            success:true,
+            data:finalFeed
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:error.message
+        })
     }
 })
 
