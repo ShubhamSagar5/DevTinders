@@ -4,6 +4,8 @@ import Body from './components/Body'
 import Feed from './components/Feed'
 import Login from './components/Login'
 import Signup from './components/Signup'
+import {Provider} from 'react-redux'
+import appStore from './utils/appStore'
 
 const App = () => {
  
@@ -33,7 +35,10 @@ const App = () => {
  
   return (
     <div>
+    <Provider store={appStore}>
       <RouterProvider router={appRouter}/>
+    </Provider>
+      
     </div>
   )
 }
