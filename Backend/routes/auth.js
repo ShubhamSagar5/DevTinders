@@ -58,7 +58,8 @@ authRouter.post("/login",async(req,res)=>{
 
             return res.cookie("token",token,{expires:new Date(Date.now() + 1*24*60*60*1000),httpOnly:true}).status(200).json({
                 success:true,
-                message:`${user.firstName} Login Successfully`
+                message:`${user.firstName} Login Successfully`,
+                data:user
             })
 
 
