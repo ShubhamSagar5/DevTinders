@@ -9,7 +9,7 @@ const userAuth = async(req,res,next) => {
 
     
     if(!token){
-        throw new Error("Invalid Token!! please signupssss")
+        return res.status(401).send("Invalid Token!! please Login")
     } 
 
     const decode = jwt.verify(token,"ThisisPrivateKey") 

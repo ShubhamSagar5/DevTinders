@@ -27,7 +27,7 @@ profileRouter.get("/profile/view",userAuth,async(req,res)=>{
     }
 })
 
-profileRouter.patch("/profile/edit",userAuth,async(req,res)=>{
+profileRouter.put("/profile/edit",userAuth,async(req,res)=>{
     try {
         
         const user = req.user 
@@ -40,11 +40,12 @@ profileRouter.patch("/profile/edit",userAuth,async(req,res)=>{
 
        Object.keys(data).forEach((val)=> (user[val] = data[val])) 
 
-       user.save() 
+        await user.save() 
 
        return res.status(200).json({
         success:true,
-        message:"User Profile Update"
+        message:"User Profile Update",
+        data : user
     })
        
 

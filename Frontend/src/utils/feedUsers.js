@@ -9,7 +9,7 @@ const feedUsersSlice = createSlice({
             return action.payload
         },
         removeFeedUser : (state,action) => {
-            return action.payload
+            return null
         }
     }
 }) 

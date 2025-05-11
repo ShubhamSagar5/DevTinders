@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { addUser } from '../utils/userSlice'
 import {BASE_URL} from '../utils/constants'
+import { toast } from 'react-toastify'
 
 const Login = () => {
   
     const [email,setEmail] = useState("rohit@gmail.com")
     const [password,setPassword] = useState("Rohit@123") 
     const [error,setError] = useState("")
+
+    const  user = useSelector((store)=>store.user)
 
     const dispatch = useDispatch() 
     const navigate = useNavigate()
@@ -23,9 +26,14 @@ const Login = () => {
         },{
           withCredentials:true
         })
-
         dispatch(addUser(res.data.data))
-        navigate("/")
+       if (res.data.success) {
+        console.log(res.data);
+        navigate("/");
+        toast.success(res.data.message);
+      }
+        
+
         
 
       } catch (error) {
@@ -34,6 +42,11 @@ const Login = () => {
       }
     }
   
+    useEffect(()=>{
+      if(user){
+        navigate("/")
+      }
+    },[])
   
   
     return (
