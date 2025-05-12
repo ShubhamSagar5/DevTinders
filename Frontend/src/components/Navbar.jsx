@@ -7,6 +7,7 @@ import { removeUser } from '../utils/userSlice'
 import { removeFeedUser } from '../utils/feedUsers'
 import { toast } from 'react-toastify'
 import { removeConnection } from '../utils/connection'
+import { removeConnectionRequest } from '../utils/connectionRequest'
 
 const Navbar = () => {
 
@@ -20,6 +21,7 @@ const Navbar = () => {
       dispatch(removeUser()) 
       dispatch(removeFeedUser()) 
       dispatch(removeConnection())
+      dispatch(removeConnectionRequest())
       toast.success("Logout Successfully")
       navigate("/login")
     } catch (error) {

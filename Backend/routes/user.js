@@ -15,7 +15,7 @@ userRouter.get("/request/recived",userAuth,async(req,res)=>{
         const recivedReq = await ConnectionModel.find({
             toUserId:loggedInUser,
             status:"interested"
-        }).populate("fromUserId",["firstName","lastName"]).select('-toUserId')
+        }).populate("fromUserId",["firstName","lastName","photoUrl","age","gender","about"]).select('-toUserId')
 
 
         if(!recivedReq.length){
@@ -27,7 +27,7 @@ userRouter.get("/request/recived",userAuth,async(req,res)=>{
 
         return res.status(200).json({
             success:true,
-            recivedReq
+            data:recivedReq
         })
 
     } catch (error) {
