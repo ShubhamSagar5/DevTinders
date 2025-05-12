@@ -8,6 +8,8 @@ import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
 import Profile from "./components/Profile";
 import { ToastContainer } from "react-toastify";
+import Connections from "./components/Connections";
+import Request from "./components/Request";
 
 const appRouter = createBrowserRouter([
   {
@@ -21,6 +23,14 @@ const appRouter = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path:"/connection",
+        element:<Connections/>
+      },
+      {
+        path:"/request",
+        element:<Request/>
       },
       {
         path: "/login",

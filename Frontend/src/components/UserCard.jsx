@@ -12,8 +12,8 @@ const UserCard = ({data}) => {
    <p className='text-lg font-semibold'>{data.firstName +" "+ data.lastName}</p>
     <p>{data.about}</p>
     <div className="card-actions justify-center">
-      <button className="btn btn-primary">Buy Now</button>
-      <button className="btn btn-secondary">Buy Now</button>
+      <button className="btn btn-primary">Ignore</button>
+      <button className="btn btn-secondary">Interested</button>
     </div>
   </div>
 </div>

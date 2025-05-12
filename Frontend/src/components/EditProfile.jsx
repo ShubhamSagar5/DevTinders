@@ -12,10 +12,12 @@ const EditProfile = ({ user }) => {
   const [about, setAbout] = useState(user?.about || '')
   const [gender, setGender] = useState(user?.gender || '')
   const [toast, setToast] = useState(false)
+  const [error,setError] = useState("")
 
   const dispatch = useDispatch()
 
   const handleSaveProfile = async () => {
+    setError("")
     try {
       const res = await axios.put(
         `${BASE_URL}/profile/edit`,
@@ -31,9 +33,12 @@ const EditProfile = ({ user }) => {
         setTimeout(() => setToast(false), 3000)
       }
     } catch (error) {
+      setError(error.response.data.message)
       console.error(error)
     }
   }
+
+
 
   return (
     <div>
@@ -47,15 +52,21 @@ const EditProfile = ({ user }) => {
           <label className="label text-[1rem]">Last Name</label>
           <input type="text" className="input" value={lastName} onChange={(e) => setLastName(e.target.value)} />
 
-          <label className="label text-[1rem]">Gender</label>
-          <input type="text" className="input" value={gender} onChange={(e) => setGender(e.target.value)} />
-
+          <fieldset className="fieldset">
+  <legend className="fieldset-legend label text-[1rem]  text-gray-400">Gender</legend>
+  <select defaultValue="Pick a browser" className="select" onChange={(e)=>setGender(e.target.value)}>
+    <option disabled={true}>Select Gender</option>
+    <option>Male</option>
+    <option>Female</option>
+    <option>Other</option>
+  </select>
+</fieldset>
           <label className="label text-[1rem]">Photo URL</label>
           <input type="text" className="input" value={photoUrl} onChange={(e) => setPhotoURL(e.target.value)} />
 
           <label className="label text-[1rem]">About</label>
           <input type="text" className="input" value={about} onChange={(e) => setAbout(e.target.value)} />
-
+          {error && <p className='text-red-500 text-[13px]'>{error}</p>}
           <button className="btn btn-primary mt-6" onClick={handleSaveProfile}>
             Save Profile
           </button>

@@ -10,7 +10,8 @@ const Feed = () => {
   
   const dispatch = useDispatch() 
   const navigate = useNavigate()
-  const {user,feed}= useSelector((store)=>store)
+  const user= useSelector((store)=>store.user)
+  const feed= useSelector((store)=>store.feed)
 
   const fetchFeedUsers  = async() => {
     try {

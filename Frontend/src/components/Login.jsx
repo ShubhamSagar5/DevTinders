@@ -28,7 +28,6 @@ const Login = () => {
         })
         dispatch(addUser(res.data.data))
        if (res.data.success) {
-        console.log(res.data);
         navigate("/");
         toast.success(res.data.message);
       }

@@ -6,6 +6,7 @@ import { BASE_URL } from '../utils/constants'
 import { removeUser } from '../utils/userSlice'
 import { removeFeedUser } from '../utils/feedUsers'
 import { toast } from 'react-toastify'
+import { removeConnection } from '../utils/connection'
 
 const Navbar = () => {
 
@@ -18,6 +19,7 @@ const Navbar = () => {
       await axios.post(BASE_URL + "/logout",{},{withCredentials:true})
       dispatch(removeUser()) 
       dispatch(removeFeedUser()) 
+      dispatch(removeConnection())
       toast.success("Logout Successfully")
       navigate("/login")
     } catch (error) {
@@ -49,7 +51,8 @@ const Navbar = () => {
             <span className="badge">New</span>
           </Link>
         </li>
-        <li><a>Settings</a></li>
+        <li><Link to={"/connection"}>Connection</Link></li>
+        <li><Link to={"/request"}>Request</Link></li>
         <li onClick={handleLogout}><a>Logout</a></li>
       </ul>
     </div>
