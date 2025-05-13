@@ -20,7 +20,7 @@ const validateSignUpData = (req) => {
 
 const validateUpdateProfile = (req) => {
 
-    const allowedData  = ["firstName","lastName","email","gender","photoUrl","about","skills"]  
+    const allowedData  = ["firstName","lastName","email","gender","photoUrl","about","skills","age"]  
 
     const data = req.body 
 

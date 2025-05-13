@@ -47,6 +47,14 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    age:{
+        type:Number,
+        validate(value){
+            if(value < 18 ){
+                throw new Error("You Must Complete 18 age")
+            }
+        }
+    },
     photoUrl:{
         type:String,
         trim:true,

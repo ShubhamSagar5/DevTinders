@@ -30,7 +30,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className="navbar bg-base-300 shadow-sm">
+    <div className="navbar sticky top-0 bg-base-300 shadow-sm">
   <div className="flex-1">
     <Link to={"/"} className="btn btn-ghost text-xl">🚀 DevTinder</Link>
   </div>

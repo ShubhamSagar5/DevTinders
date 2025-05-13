@@ -22,9 +22,11 @@ authRouter.post("/signup",async(req,res)=>{
             password:hashPassword
         })
 
-        await user.save() 
+        const newUser = await user.save()  
+        
+        const token = await newUser.getJWT()
 
-        return res.status(200).json({
+        return res.cookie("token",token,{expires:new Date(Date.now() + 1 *24 *60 * 60 * 1000),httpOnly:true}).status(200).json({
             success:true,
             message:"User Created Successfully",
             data:user
