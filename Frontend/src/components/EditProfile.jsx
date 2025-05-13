@@ -56,9 +56,9 @@ const EditProfile = ({ user }) => {
   <legend className="fieldset-legend label text-[1rem]  text-gray-400">Gender</legend>
   <select defaultValue="Pick a browser" className="select" onChange={(e)=>setGender(e.target.value)}>
     <option disabled={true}>Select Gender</option>
-    <option>Male</option>
-    <option>Female</option>
-    <option>Other</option>
+    <option value={"Male"}>Male</option>
+    <option value={"Female"}>Female</option>
+    <option value={"Other"}>Other</option>
   </select>
 </fieldset>
           <label className="label text-[1rem]">Photo URL</label>
@@ -66,9 +66,9 @@ const EditProfile = ({ user }) => {
 
           <label className="label text-[1rem]">About</label>
           <input type="text" className="input" value={about} onChange={(e) => setAbout(e.target.value)} />
-          {error && <p className='text-red-500 text-[13px]'>{error}</p>}
+          {error && <p className='text-red-500 text-[13px]'>{error} </p>}
           <button className="btn btn-primary mt-6" onClick={handleSaveProfile}>
-            Save Profile
+            Save Profile 
           </button>
         </fieldset>
 

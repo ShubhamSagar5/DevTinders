@@ -1,8 +1,8 @@
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BASE_URL } from '../utils/constants'
 import { useDispatch, useSelector } from 'react-redux'
-import { addFeedUser } from '../utils/feedUsers'
+import { addFeedUser, removeSingleUser } from '../utils/feedUsers'
 import { useNavigate } from 'react-router-dom'
 import UserCard from './UserCard'
 
@@ -20,8 +20,9 @@ const Feed = () => {
     } catch (error) {
         console.log(error.response)
     }
-  } 
+  }  
 
+  
   
 
   useEffect(()=>{ 
@@ -34,6 +35,11 @@ const Feed = () => {
     }
   },[])
   
+
+  if(!feed) return; 
+
+  if(feed.length <= 0 ) return <p className='text-center mt-10'>No New Users Found</p>;
+
   return (
     <div>
     <div className='flex justify-center my-[5%]'>
