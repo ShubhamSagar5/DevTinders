@@ -74,7 +74,7 @@ profileRouter.patch("/profile/password",userAuth,async(req,res)=>{
 
     user.password = updatePassword 
 
-    user.save()
+    await user.save()
 
     return res.status(200).json({
         success:true,
