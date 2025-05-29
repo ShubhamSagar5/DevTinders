@@ -12,7 +12,7 @@ const userAuth = async(req,res,next) => {
         return res.status(401).send("Invalid Token!! please Login")
     } 
 
-    const decode = jwt.verify(token,"ThisisPrivateKey") 
+    const decode = jwt.verify(token,process.env.JWT_SECERT) 
 
     const user = await User.findById(decode.id) 
 

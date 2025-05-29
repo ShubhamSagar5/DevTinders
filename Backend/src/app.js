@@ -6,6 +6,8 @@ const userRouter = require("../routes/user")
 const profileRouter = require("../routes/profile") 
 const connectionRouter = require("../routes/connection")
 const cors = require('cors')
+require('dotenv').config()
+
 
 const app = express() 
  
