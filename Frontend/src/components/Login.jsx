@@ -82,7 +82,14 @@ const Login = () => {
   <input type="text" className="input" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Password" />
  {error && <p className='text-red-500 text-[15px] mt-2 flex justify-center'>{error}</p> } 
   <button className="btn btn-outline btn-primary mt-6" onClick={isLoggedInForm ? handleLogin : handleSignup}>{ isLoggedInForm ? "Login" : "Signup"}</button>
-<p className='text-center font-semibold cursor-pointer mt-1' onClick={()=> setIsLoggedinForm(!isLoggedInForm)}>{isLoggedInForm ? "New to DevTinder ? Singup " : "Already User ? Please Login"}</p>
+<p className='text-center font-semibold cursor-pointer mt-1' onClick={()=> 
+{
+  setIsLoggedinForm(!isLoggedInForm)
+  setEmail("")
+  setPassword("")
+  setFirstName("")
+  setLastName("")
+  }}>{isLoggedInForm ? "New to DevTinder ? Singup " : "Already User ? Please Login"}</p>
 </fieldset>  
     </div>
 

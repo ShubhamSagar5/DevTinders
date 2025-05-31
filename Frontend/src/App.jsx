@@ -10,6 +10,7 @@ import Profile from "./components/Profile";
 import { ToastContainer } from "react-toastify";
 import Connections from "./components/Connections";
 import Request from "./components/Request";
+import Chat from "./components/Chat";
 
 const appRouter = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const appRouter = createBrowserRouter([
         path: "/signup",
         element: <Signup />,
       },
+      {
+        path:"/chat/:targetUserId",
+        element:<Chat/>
+      }
     ],
   },
 ]); 

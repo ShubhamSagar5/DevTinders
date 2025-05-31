@@ -2,6 +2,7 @@ const express = require('express')
 const { userAuth } = require('../Middleware/Auth')
 const { validateUpdateProfile, validatePassword } = require('../utils/validateData') 
 const bcrypt = require('bcrypt')
+const User = require('../models/users')
 
 
 const profileRouter = express.Router() 
@@ -9,7 +10,13 @@ const profileRouter = express.Router()
 profileRouter.get("/profile/view",userAuth,async(req,res)=>{
     try {
         
-        const user = req.user 
+        let  user = req.query?.targetID || req.user 
+
+        if(req.query?.targetID){
+            
+            user = await User.findById(user).select("-password")
+
+        }
 
         return res.status(200).json({
             success:true,

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BASE_URL } from '../utils/constants'
 import { addConnection } from '../utils/connection'
+import { Link } from 'react-router-dom'
 
 const Connections = () => {
   
@@ -50,14 +51,17 @@ const Connections = () => {
                     const {firstName,lastName,photoUrl,about,gender,age} = user
 
                     return (
-                        <div className='mt-2 flex gap-4 items-center p-3 m-2 rounded-lg bg-base-300 '>
-                        <div className='w-14'><img className='rounded-full' src={photoUrl} alt="" /></div>
+                        <div className='mt-2 flex justify-between items-center p-3 m-2 rounded-lg bg-base-300 '>
+                        <div className='flex gap-4 items-center'>
+                           <div className='w-14'><img className='rounded-full' src={photoUrl} alt="" /></div>
                         <div className=''><p className='font-semibold text-xl'>{firstName + " " + lastName}</p>
                            {age && gender && <p>{age+","+gender}</p>} 
                             <p className='text-sm'>{about}</p>
-                            </div>
+                            </div>  
+                        </div>
+                       
                             
-
+                       <Link to={`/chat/${user._id}`}> <button className='rounded px-3 py-2 bg-primary cursor-pointer'>Chat</button></Link>
                         </div>
                     )
                 })
