@@ -1,15 +1,24 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState} from 'react'
+import {useSelector} from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { BASE_URL } from '../utils/constants'
+import { createSocketConnection } from '../utils/socket'
 
 const Chat = () => {
   
   const {targetUserId}  = useParams()
 
-  const [data,setData] = useState([{message:"Hieelo"},{message:"hello"}])
+  const [data,setData] = useState([{firstName:"hari",message:"Hieelo"},{firstName:"elon",message:"hello"}])
 
-  const [targetData,setTargetData] = useState()
+  const [targetData,setTargetData] = useState(null) 
+
+  const [textMessage,setTextMessage] = useState("")
+
+  const loggedInUser = useSelector((store)=>store?.user)
+
+  const loggedInUserId = loggedInUser?._id
+  const loggedInUserFirstName = loggedInUser?.firstName
 
   const getTargetUser = async() => {
     try {
@@ -21,12 +30,39 @@ const Chat = () => {
     }
   }
   
+  const handleSendMessage = () => {
+    if(!textMessage){
+      return ;
+    }
+    const socket = createSocketConnection() 
+    socket.emit("sendMessage",({loggedInUserId,targetUserId,textMessage,firstName:loggedInUserFirstName}))
+    setTextMessage("")
+  }
 
   useEffect(()=>{
-    getTargetUser()
-  },[])
+    getTargetUser() 
 
-  console.log(targetData)
+    if(!loggedInUserId)
+    {
+      return; 
+    }
+    
+    const socket = createSocketConnection()
+    
+    socket.emit("joinChat",{loggedInUserId,targetUserId,firstName:loggedInUserFirstName})
+
+    socket.on("messageRecived",({firstName,textMessage})=>{
+      console.log(firstName + "frontend" + textMessage)
+      setData((prev)=>[...prev,{firstName:firstName,message:textMessage}])
+    })
+
+    return () => {
+      socket.disconnect()
+    }
+
+  },[loggedInUserId,targetUserId])
+ 
+
   return (
     <div className='mt-5 '>
 
@@ -37,17 +73,15 @@ const Chat = () => {
             data.map((mess,index)=>{
               return (
                 <div key={index}>
-                  <div className="chat chat-start">
-  <div className="chat-image avatar">
-    <div className="w-10 rounded-full">
-      <img
-        alt="Tailwind CSS chat bubble component"
-        src={targetData?.photoUrl}
-      />
-    </div>
+<div className="chat chat-start">
+  <div className="chat-header">
+    {mess.firstName}
+    <time className="text-xs opacity-50">2 hours ago</time>
   </div>
   <div className="chat-bubble">{mess.message}</div>
+  <div className="chat-footer opacity-50">Seen</div>
 </div>
+
 
                 </div>
               )
@@ -55,10 +89,10 @@ const Chat = () => {
           }
         </div>
         <div className='border-t flex '>
-            <input className='border w-9/12 m-2 p-2' type="text" name="" id="" />
+            <input className='border w-9/12 m-2 p-2 rounded-md bg-base-300' value={textMessage} onChange={(e)=>setTextMessage(e.target.value)} type="text" name="" id="" />
             
             <div className='p-2 w-3/12'>
-              <button className='bg-primary w-full p-2'>Send ✔ </button>
+              <button className='bg-primary w-full p-2 rounded-md' onClick={handleSendMessage}>Send ✔ </button>
             </div>
         </div>
       </div>

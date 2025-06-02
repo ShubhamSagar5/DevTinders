@@ -16,7 +16,6 @@ const Connections = () => {
         try {
             
             const res = await axios.get(BASE_URL+"/connection",{withCredentials:true})
-            console.log(res)
             if(res.data.success){
                     setMessage(res?.data?.message)
                 
@@ -27,10 +26,9 @@ const Connections = () => {
             console.log(error)
         }
     }
-  console.log(connection?.length)
+
     useEffect(()=>{
         if(!connection){
-            console.log("print")
             fetchConnection()
         }
         
@@ -51,7 +49,7 @@ const Connections = () => {
                     const {firstName,lastName,photoUrl,about,gender,age} = user
 
                     return (
-                        <div className='mt-2 flex justify-between items-center p-3 m-2 rounded-lg bg-base-300 '>
+                        <div key={user._id} className='mt-2 flex justify-between items-center p-3 m-2 rounded-lg bg-base-300 '>
                         <div className='flex gap-4 items-center'>
                            <div className='w-14'><img className='rounded-full' src={photoUrl} alt="" /></div>
                         <div className=''><p className='font-semibold text-xl'>{firstName + " " + lastName}</p>

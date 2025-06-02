@@ -6,13 +6,15 @@ const userRouter = require("../routes/user")
 const profileRouter = require("../routes/profile") 
 const connectionRouter = require("../routes/connection")
 const cors = require('cors')
+const http  = require('http')
+const initalizeSocketCoonection = require('../utils/socket')
 require('dotenv').config()
 
 
 const app = express() 
- 
+  
 app.use(cors({
-    origin:"*",
+    origin:"http://localhost:5173",
       methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials:true
 }))
@@ -26,10 +28,12 @@ app.use("/",connectionRouter)
 
 
 
+const server = http.createServer(app)
+initalizeSocketCoonection(server)
 
 dbConnection()
 .then(()=>{
-    app.listen(3000,()=>{
+    server.listen(3000,()=>{
     console.log("server is listen on port 3000")
 }) 
     console.log("Database connected successfully")
