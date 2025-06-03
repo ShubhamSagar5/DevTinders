@@ -9,7 +9,7 @@ const Chat = () => {
   
   const {targetUserId}  = useParams()
 
-  const [data,setData] = useState([{firstName:"hari",message:"Hieelo"},{firstName:"elon",message:"hello"}])
+  const [data,setData] = useState([])
 
   const [targetData,setTargetData] = useState(null) 
 
@@ -19,6 +19,7 @@ const Chat = () => {
 
   const loggedInUserId = loggedInUser?._id
   const loggedInUserFirstName = loggedInUser?.firstName
+  const loggedInUserLastName = loggedInUser?.lastName
 
   const getTargetUser = async() => {
     try {
@@ -35,9 +36,35 @@ const Chat = () => {
       return ;
     }
     const socket = createSocketConnection() 
-    socket.emit("sendMessage",({loggedInUserId,targetUserId,textMessage,firstName:loggedInUserFirstName}))
+    socket.emit("sendMessage",({loggedInUserId,targetUserId,textMessage,firstName:loggedInUserFirstName,lastName:loggedInUserLastName}))
     setTextMessage("")
   }
+
+  const fetchChat = async() => {
+    try {
+      
+      const chat = await axios.get(BASE_URL+"/chat/"+targetUserId,{withCredentials:true}) 
+
+      const messagSet = chat?.data?.data?.message 
+
+      const finalData = messagSet?.map((mess)=>{
+        return {
+          firstName:mess.senderId.firstName,
+          lastName:mess.senderId.lastName,
+          message:mess.text
+
+        }
+      })
+      setData(finalData)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(()=>{
+    fetchChat()
+  },[])
 
   useEffect(()=>{
     getTargetUser() 
@@ -51,9 +78,9 @@ const Chat = () => {
     
     socket.emit("joinChat",{loggedInUserId,targetUserId,firstName:loggedInUserFirstName})
 
-    socket.on("messageRecived",({firstName,textMessage})=>{
-      console.log(firstName + "frontend" + textMessage)
-      setData((prev)=>[...prev,{firstName:firstName,message:textMessage}])
+    socket.on("messageRecived",({firstName,lastName,textMessage})=>{
+      // console.log(firstName + "frontend" + textMessage)
+      setData((prev)=>[...prev,{firstName:firstName,lastName:lastName,message:textMessage}])
     })
 
     return () => {
@@ -73,9 +100,9 @@ const Chat = () => {
             data.map((mess,index)=>{
               return (
                 <div key={index}>
-<div className="chat chat-start">
+<div className={"chat "+ (loggedInUserFirstName === mess.firstName ? "chat-start" : "chat-end")}>
   <div className="chat-header">
-    {mess.firstName}
+    {mess.firstName +" "+ mess.lastName}
     <time className="text-xs opacity-50">2 hours ago</time>
   </div>
   <div className="chat-bubble">{mess.message}</div>

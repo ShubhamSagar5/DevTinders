@@ -8,6 +8,7 @@ const connectionRouter = require("../routes/connection")
 const cors = require('cors')
 const http  = require('http')
 const initalizeSocketCoonection = require('../utils/socket')
+const chatRouter = require('../routes/chat')
 require('dotenv').config()
 
 
@@ -25,7 +26,7 @@ app.use("/",authRouter)
 app.use("/",userRouter)
 app.use("/",profileRouter)
 app.use("/",connectionRouter)
-
+app.use("/",chatRouter)
 
 
 const server = http.createServer(app)
