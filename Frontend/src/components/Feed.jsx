@@ -10,15 +10,19 @@ const Feed = () => {
   
   const dispatch = useDispatch() 
   const navigate = useNavigate()
+  const [loader,setLoader] = useState(false)
   const user= useSelector((store)=>store.user)
   const feed= useSelector((store)=>store.feed)
 
   const fetchFeedUsers  = async() => {
     try {
+      setLoader(true)
       const res = await axios.get(BASE_URL + "/feed",{withCredentials:true})
       dispatch(addFeedUser(res.data.data ))
     } catch (error) {
         console.log(error.response)
+    }finally{
+      setLoader(false)
     }
   }  
 
@@ -34,14 +38,20 @@ const Feed = () => {
       navigate("/login")
     }
   },[])
-  
-
-  if(!feed) return; 
-
-  if(feed.length <= 0 ) return <p className='text-center mt-10'>No New Users Found</p>;
-
+    console.log(feed)
+    console.log(feed?.length <= 0)
+    if(feed?.length <= 0 || feed == null ) return <p className='text-center mt-10'>No New Users Found</p>;
+    
+    
+    
+    
+    if (loader) {
+      return <div className="flex justify-center mt-10"><span className="loading loading-spinner loading-2xl text-5xl"></span></div>;
+    }
+    if(!feed) return; 
+    
   return (
-    <div>
+    <div className='mt-30'>
     <div className='flex justify-center my-[5%]'>
       { feed?.length > 0 &&<UserCard data ={feed[0]} /> }
     </div>

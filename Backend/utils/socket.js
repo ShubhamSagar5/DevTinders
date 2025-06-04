@@ -12,13 +12,27 @@ const initalizeSocketCoonection = (server) => {
         }
     }) 
 
+
+    
+
     io.on("connection",(socket)=>{
+
+        socket.on("userConnected",(userId)=>{
+            onlineUsers.set(userId,socket.id)
+            socket.userId  = userId
+        })
 
         socket.on("joinChat",({loggedInUserId,targetUserId,firstName})=>{
             const room = [loggedInUserId,targetUserId].sort().join("_")
             socket.join(room)
             // console.log(firstName + "joining room id" +room)
+        
+        
+
+           
+
         })
+
         socket.on("sendMessage",async({loggedInUserId,targetUserId,firstName,textMessage,lastName})=>{
 
             try {
@@ -52,12 +66,12 @@ const initalizeSocketCoonection = (server) => {
             } catch (error) {
                 console.log(error)
             }
-
+ 
            
         })
-        socket.on("disconnect",()=>{
-             
-        })
+     socket.on("disconnect", () => {
+  
+});
     })
  
 }

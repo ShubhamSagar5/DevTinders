@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useRef, useState} from 'react'
 import {useSelector} from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { BASE_URL } from '../utils/constants'
@@ -14,6 +14,7 @@ const Chat = () => {
   const [targetData,setTargetData] = useState(null) 
 
   const [textMessage,setTextMessage] = useState("")
+
 
   const loggedInUser = useSelector((store)=>store?.user)
 
@@ -62,6 +63,12 @@ const Chat = () => {
     }
   }
 
+    const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef?.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [data]);
+
   useEffect(()=>{
     fetchChat()
   },[])
@@ -83,6 +90,8 @@ const Chat = () => {
       setData((prev)=>[...prev,{firstName:firstName,lastName:lastName,message:textMessage}])
     })
 
+  
+
     return () => {
       socket.disconnect()
     }
@@ -91,32 +100,31 @@ const Chat = () => {
  
 
   return (
-    <div className='mt-5 '>
+    <div className='mt-7 p-5 md:mt-2 md:p-0 '>
 
       <div className='md:w-1/2 border mx-auto rounded-md'>
-        <div className='text-center p-2'><p className='text-2xl'>Chat</p></div>
+        <div className='p-2 flex justify-between items-center'><p className='text-2xl'>Chat</p> </div>
         <div className='border-t h-[65vh] overflow-y-auto p-2'>
-          {
-            data.map((mess,index)=>{
-              return (
-                <div key={index}>
-<div className={"chat "+ (loggedInUserFirstName === mess.firstName ? "chat-start" : "chat-end")}>
-  <div className="chat-header">
-    {mess.firstName +" "+ mess.lastName}
-    <time className="text-xs opacity-50">2 hours ago</time>
-  </div>
-  <div className="chat-bubble">{mess.message}</div>
-  <div className="chat-footer opacity-50">Seen</div>
-</div>
+      {
+        data.map((mess, index) => (
+          <div key={index}>
+            <div className={'chat ' + (loggedInUserFirstName === mess.firstName ? 'chat-end' : 'chat-start')}>
+              <div className="chat-header ">
+                {mess.firstName + ' ' + mess.lastName}
+                
+              </div>
+              <div className="chat-bubble text-2xl md:text-[1.2rem]">{mess.message}</div>
+              <div className="chat-footer opacity-50">Seen</div>
+            </div>
+          </div>
+        ))
+      }
 
-
-                </div>
-              )
-            })
-          }
-        </div>
+      {/* This dummy div helps scroll to bottom */}
+      <div ref={messagesEndRef} className='bg-red-200' />
+    </div>
         <div className='border-t flex '>
-            <input className='border w-9/12 m-2 p-2 rounded-md bg-base-300' value={textMessage} onChange={(e)=>setTextMessage(e.target.value)} type="text" name="" id="" />
+            <input className='border w-9/12 m-2 px-0.5 md:p-2 rounded-md bg-base-300 text-2xl md:text-sm' value={textMessage} onChange={(e)=>setTextMessage(e.target.value)} type="text" name="" id="" />
             
             <div className='p-2 w-3/12'>
               <button className='bg-primary w-full p-2 rounded-md' onClick={handleSendMessage}>Send ✔ </button>

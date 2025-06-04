@@ -9,13 +9,13 @@ const Request = () => {
     const [message,setMessage] = useState("")
     const dispatch = useDispatch()  
     const connectionRequest = useSelector((store)=>store.connectionRequest)
-
+    const [loader,setLoader] = useState(false)
     const [showTaost,setShowToast] = useState(false)
     const [toastMessage,setToastMessage] = useState("")
 
     const fetchConnectionRequest = async() => {
         try {
-            
+            setLoader(true)
             const res = await axios.get(BASE_URL+"/request/recived",{withCredentials:true}) 
             console.log(res)
             if(res.data.success){
@@ -25,6 +25,8 @@ const Request = () => {
 
         } catch (error) {
             console.log(error)
+        }finally{
+            setLoader(false)
         }
     }
 
@@ -55,13 +57,16 @@ const Request = () => {
     }
   },[])
   
+  if (loader) {
+  return <div className="flex justify-center mt-10"><span className="loading loading-spinner loading-2xl"></span></div>;
+}
   if(connectionRequest == null) return <p className='text-lg mt-7 text-center'>{message}</p>;
 
-    return (
+    return  (
      <div className='flex justify-center mt-7'>
     <div className='w-full'>
-         <p className='text-lg w-1/2 mx-auto text-center'>Connection Request</p>
-        <div className='mt-5 w-1/3 mx-auto'>
+         <p className='text-lg md:w-1/2 mx-auto text-center'>Connection Request</p>
+        <div className='mt-5 md:w-1/3 mx-auto'>
             {
                 connectionRequest?.map((user)=>{
                     const id = user._id
@@ -69,12 +74,12 @@ const Request = () => {
 
                     return (
                         <div key={id} className='mt-2 flex gap-4 items-center p-3 m-2 rounded-lg bg-base-300 '>
-                        <div className='w-14'><img className='rounded-full' src={photoUrl} alt="" /></div>
-                        <div className=''><p className='font-semibold text-xl'>{firstName + " " + lastName}</p>
+                        <div className='md:w-14 w-2/12'><img className='rounded-full' src={photoUrl} alt="" /></div>
+                        <div className='w-5/12'><p className='font-semibold text-xl'>{firstName + " " + lastName}</p>
                            {age && gender && <p>{age+","+gender}</p>} 
                             <p className='text-sm'>{about}</p>
                             </div>
-                            <div className='flex gap-3'>
+                            <div className='flex gap-3 w-5/12'>
                                  <button className="btn btn-primary " onClick={()=>updateRequestStatus("accepted",id)}>Accept</button>
       <button className="btn btn-outline btn-error" onClick={()=>updateRequestStatus("rejected",id)}>Reject</button>
                             </div>

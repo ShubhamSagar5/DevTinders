@@ -14,7 +14,7 @@ const Login = () => {
     const [isLoggedInForm,setIsLoggedinForm] = useState(true) 
     const [firstName,setFirstName]  = useState("") 
     const [lastName,setLastName] = useState("") 
-
+    const [loader,setLoader] = useState(false)
     const  user = useSelector((store)=>store.user)
 
     const dispatch = useDispatch() 
@@ -22,7 +22,7 @@ const Login = () => {
 
     const handleLogin = async() => {
       try {
-        
+        setLoader(true)
         const res = await axios.post(BASE_URL+"/login",{
           email,
           password
@@ -41,11 +41,14 @@ const Login = () => {
       } catch (error) {
         setError(error.response.data.message)
         
+      }finally{
+        setLoader(false)
       }
     } 
 
     const handleSignup = async() => {
       try {
+        setLoader(true)
         const res = await axios.post(BASE_URL+"signup",{firstName,lastName,email,password},{withCredentials:true}) 
         if(res.data.success){
           dispatch(addUser(res.data.data)) 
@@ -54,6 +57,8 @@ const Login = () => {
         }
       } catch (error) {
         setError(error.response.data.message)
+      }finally{
+        setLoader(false)
       }
     }
   
@@ -65,24 +70,25 @@ const Login = () => {
   
   
     return (
-    <div className='w-full flex justify-center my-[7rem]'>
-    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+    <div className='w-full flex justify-center my-[7rem] md:my-4'>
+    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border md:p-4 p-2">
   <legend className="fieldset-legend text-2xl">{isLoggedInForm ? "Login" : "Signup"}</legend>
 
-{ !isLoggedInForm && <div><label className="label mb-1 text-lg">FirstName</label>
-  <input type="text" className="input" value={firstName} onChange={(e)=>setFirstName(e.target.value)} placeholder="FirstName" /> 
+{ !isLoggedInForm && <div><label className="label md:mb-1 mb-2 md:text-lg text-2xl">FirstName</label>
+  <input type="text" className="input text-2xl md:text-base" value={firstName} onChange={(e)=>setFirstName(e.target.value)} placeholder="FirstName" /> 
 
-   <label className="label text-lg mt-3 mb-1">LastName</label>
-  <input type="text" className="input" value={lastName} onChange={(e)=>setLastName(e.target.value)} placeholder="LastName" /></div>
+   <label className="label mt-3 md:mb-1 mb-2 md:text-lg text-2xl">LastName</label>
+  <input type="text" className="input text-2xl md:text-base" value={lastName} onChange={(e)=>setLastName(e.target.value)} placeholder="LastName" /></div>
 }
-  <label className="label text-lg mt-3">Email</label>
-  <input type="email" className="input" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email" />
+  <label className="label text-2xl md:text-lg md:mt-3 mt-2 ">Email</label>
+  <input type="email" className="input text-2xl md:text-base" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email" />
 
-  <label className="label text-lg mt-3">Password</label>
-  <input type="text" className="input" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Password" />
- {error && <p className='text-red-500 text-[15px] mt-2 flex justify-center'>{error}</p> } 
-  <button className="btn btn-outline btn-primary mt-6" onClick={isLoggedInForm ? handleLogin : handleSignup}>{ isLoggedInForm ? "Login" : "Signup"}</button>
-<p className='text-center font-semibold cursor-pointer mt-1' onClick={()=> 
+  <label className="label text-2xl md:text-lg md:mt-3 mt-2 ">Password</label>
+  <input type="text" className="input text-2xl md:text-base" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Password" />
+ {error && <p className='text-red-500 text-lg md:text-[15px] mt-2 flex justify-center'>{error}</p> } 
+  <button className="btn btn-outline btn-primary mt-6 text-xl md:text-base" onClick={isLoggedInForm ? handleLogin : handleSignup}>{loader ? (<span className="loading loading-dots loading-xl"></span>
+) : (isLoggedInForm ? "Login" : "Signup")}</button>
+<p className='text-center md:text-sm text-lg font-semibold cursor-pointer mt-1' onClick={()=> 
 {
   setIsLoggedinForm(!isLoggedInForm)
   setEmail("")

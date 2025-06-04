@@ -8,13 +8,13 @@ import { Link } from 'react-router-dom'
 const Connections = () => {
   
     const [message,setMessage] = useState("") 
-
+    const [loader,setLoader] = useState(false)
     const connection = useSelector((store)=>store.connection) 
     const dispatch = useDispatch()
 
     const fetchConnection = async() => {
         try {
-            
+            setLoader(true)   
             const res = await axios.get(BASE_URL+"/connection",{withCredentials:true})
             if(res.data.success){
                     setMessage(res?.data?.message)
@@ -24,6 +24,8 @@ const Connections = () => {
 
         } catch (error) {
             console.log(error)
+        }finally{
+            setLoader(false)
         }
     }
 
@@ -35,21 +37,23 @@ const Connections = () => {
     },[]) 
 
  
-
+ if (loader) {
+  return <div className="flex justify-center mt-10"><span className="loading loading-spinner loading-xl text-5xl"></span></div>;
+}
     if(!connection?.length) return <p className='flex justify-center mt-7'>{message}</p>
 
-    return (
-    <div className='flex justify-center mt-7'>
+    return  (
+    <div className='md:flex justify-center mt-7'>
     <div className='w-full'>
-         <p className='text-lg w-1/2 mx-auto text-center'>Connection</p>
-        <div className='mt-5 w-1/3 mx-auto'>
+         <p className='text-lg md:w-1/2 mx-auto text-center'>Connection</p>
+        <div className='mt-5  md:w-1/3 mx-auto'>
             {
                 connection?.map((user)=>{
                     
                     const {firstName,lastName,photoUrl,about,gender,age} = user
 
                     return (
-                        <div key={user._id} className='mt-2 flex justify-between items-center p-3 m-2 rounded-lg bg-base-300 '>
+                        <div key={user._id} className='md:mt-2 mt-4 flex justify-between items-center p-3 m-2 rounded-lg bg-base-300 '>
                         <div className='flex gap-4 items-center'>
                            <div className='w-14'><img className='rounded-full' src={photoUrl} alt="" /></div>
                         <div className=''><p className='font-semibold text-xl'>{firstName + " " + lastName}</p>

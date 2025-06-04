@@ -4,6 +4,7 @@ import axios from 'axios'
 import { BASE_URL } from '../utils/constants'
 import { useDispatch } from 'react-redux'
 import { addUser } from '../utils/userSlice'
+import { toast } from 'react-toastify'
 
 
 const EditProfile = ({ user }) => {
@@ -13,14 +14,15 @@ const EditProfile = ({ user }) => {
   const [about, setAbout] = useState(user?.about || '')
   const [gender, setGender] = useState(user?.gender || '') 
   const [age,setAge] = useState(user?.age || 0)
-  const [toast, setToast] = useState(false)
   const [error,setError] = useState("")
 
   const dispatch = useDispatch()
-
+  const [loader,setLoader] = useState(false)
+  
   const handleSaveProfile = async () => {
     setError("")
     try {
+      setLoader(true)
       const res = await axios.put(
         `${BASE_URL}/profile/edit`,
         { firstName, lastName, gender, photoUrl, about,age },
@@ -31,12 +33,13 @@ const EditProfile = ({ user }) => {
 
       if (res.data.success) {
         dispatch(addUser(res.data.data)) 
-        setToast(true)
-        setTimeout(() => setToast(false), 3000)
+        toast.success("Profile Update Successfully")
       }
     } catch (error) {
       setError(error.response.data.message)
       console.error(error)
+    }finally{
+      setLoader(false)
     }
   }
 
@@ -72,7 +75,7 @@ const EditProfile = ({ user }) => {
           <input type="text" className="input" value={about} onChange={(e) => setAbout(e.target.value)} />
           {error && <p className='text-red-500 text-[13px]'>{error} </p>}
           <button className="btn btn-primary mt-2" onClick={handleSaveProfile}>
-            Save Profile 
+           {loader ? (<span className="loading loading-spinner loading-xl"></span>):"Save Profile"}  
           </button>
         </fieldset>
 
@@ -83,14 +86,6 @@ const EditProfile = ({ user }) => {
           </fieldset>
         </div>
       </div>
-
-      {toast && (
-        <div className="toast toast-top toast-center">
-          <div className="alert alert-success">
-            <span>Profile Updated Successfully</span>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

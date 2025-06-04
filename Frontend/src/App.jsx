@@ -52,12 +52,12 @@ const appRouter = createBrowserRouter([
 
 const App = () => {
   return (
-    <div>
+    
       <Provider store={appStore}>
         <RouterProvider router={appRouter} />{" "}
         <ToastContainer position="top-center" autoClose={2000} />
       </Provider>
-    </div>
+ 
   );
 };
 
