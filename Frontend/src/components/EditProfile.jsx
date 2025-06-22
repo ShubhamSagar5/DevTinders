@@ -5,6 +5,7 @@ import { BASE_URL } from '../utils/constants'
 import { useDispatch } from 'react-redux'
 import { addUser } from '../utils/userSlice'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 
 const EditProfile = ({ user }) => {
@@ -18,6 +19,7 @@ const EditProfile = ({ user }) => {
 
   const dispatch = useDispatch()
   const [loader,setLoader] = useState(false)
+  const navigate = useNavigate()
   
   const handleSaveProfile = async () => {
     setError("")
@@ -34,6 +36,7 @@ const EditProfile = ({ user }) => {
       if (res.data.success) {
         dispatch(addUser(res.data.data)) 
         toast.success("Profile Update Successfully")
+        navigate("/")
       }
     } catch (error) {
       setError(error.response.data.message)
