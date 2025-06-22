@@ -49,7 +49,7 @@ const Login = () => {
     const handleSignup = async() => {
       try {
         setLoader(true)
-        const res = await axios.post(BASE_URL+"signup",{firstName,lastName,email,password},{withCredentials:true}) 
+        const res = await axios.post(BASE_URL+"/signup",{firstName,lastName,email,password},{withCredentials:true}) 
         if(res.data.success){
           dispatch(addUser(res.data.data)) 
           navigate("/profile")
